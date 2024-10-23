@@ -1,25 +1,33 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import Header from './components/Header';
+import BlogPostForm from './components/BlogPostForm';
+import BlogList from './components/BlogList';
 import './App.css';
+import { Container } from 'react-bootstrap';
 
-function App() {
+const App = () => {
+  const [blogPosts, setBlogPosts] = useState(() => {
+    const savedPosts = localStorage.getItem('blogPosts');
+    return savedPosts ? JSON.parse(savedPosts) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
+  }, [blogPosts]);
+
+  const addBlogPost = (post) => {
+    setBlogPosts([post, ...blogPosts]);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <Container>
+        <BlogPostForm addBlogPost={addBlogPost} />
+        <BlogList blogPosts={blogPosts} />
+      </Container>
     </div>
   );
-}
+};
 
 export default App;
